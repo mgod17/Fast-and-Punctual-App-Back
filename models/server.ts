@@ -3,7 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 
 import userRoutes from "../routes/user.routes";
-// import db from "../db/connections";
+import db from "../db/conections";
 
 class Server {
   private app: Application;
@@ -23,7 +23,7 @@ class Server {
   }
 
   dbConnection() {
-    // db();
+    db();
   }
 
   middlewares() {

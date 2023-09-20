@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const user_routes_1 = __importDefault(require("../routes/user.routes"));
-// import db from "../db/connections";
+const conections_1 = __importDefault(require("../db/conections"));
 class Server {
     constructor() {
         this.apiPaths = {
@@ -21,7 +21,7 @@ class Server {
         this.routes();
     }
     dbConnection() {
-        // db();
+        (0, conections_1.default)();
     }
     middlewares() {
         //CORS

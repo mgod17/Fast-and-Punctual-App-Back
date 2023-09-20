@@ -1,12 +1,37 @@
 "use strict";
-// import mongoose from "mongoose";
-// const db = async () => {
-//   try {
-//     mongoose.connect("");
-//     console.log("DB connected successfully");
-//   } catch (error) {
-//     console.log("Connection to DB failed", error);
-//   }
-// };
-// export default db;
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongodb_1 = require("mongodb");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const url = process.env.DB_URL;
+if (!url) {
+    console.error("DB_URL not defined in .env");
+    process.exit(1);
+}
+const db = () => __awaiter(void 0, void 0, void 0, function* () {
+    const client = new mongodb_1.MongoClient(url);
+    try {
+        yield client.connect();
+        console.log("Connected successfully to MongoDB Atlas");
+    }
+    catch (error) {
+        console.log("Connection to MongoDB Atlas failed", error);
+    }
+    finally {
+        yield client.close();
+    }
+});
+exports.default = db;
 //# sourceMappingURL=conections.js.map
