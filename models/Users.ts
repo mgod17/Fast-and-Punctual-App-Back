@@ -2,14 +2,20 @@ import { prop, getModelForClass, pre } from "@typegoose/typegoose";
 import bcrypt from "bcrypt";
 
 @pre<User>("save", async function () {
-    await this.hashPassword(this.password)
+  this.password = await this.hashPassword(this.password);
 })
-
 class User {
   @prop({ required: true, unique: true, trim: true })
   email: string;
 
-  @prop({ required: true, minlength: 8 })
+  @prop({
+    required: true,
+    validate: {
+      validator: (password: string) => /^(?=.*[A-Z]).{8,}$/.test(password),
+      message:
+        "Password must be at least 8 characters and contain a capital letter",
+    },
+  })
   password: string;
 
   @prop({ required: true, enum: ["admin", "delivery"], default: "delivery" })

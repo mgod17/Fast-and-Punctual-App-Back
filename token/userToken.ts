@@ -4,7 +4,7 @@ dotenv.config();
 
 const secretToken = process.env.SECRET_TOKEN || "FAST&FURIUS";
 
-const generateToken = (payload: any): string => {
+const generateToken = (payload: object): string => {
   return jwt.sign(payload, secretToken, { expiresIn: "2h" });
 };
 

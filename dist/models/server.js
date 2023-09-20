@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
+const body_parser_1 = __importDefault(require("body-parser"));
 const user_routes_1 = __importDefault(require("../routes/user.routes"));
 const conections_1 = __importDefault(require("../db/conections"));
 class Server {
@@ -30,6 +31,7 @@ class Server {
         this.app.use(express_1.default.json());
         //MORGAN
         this.app.use((0, morgan_1.default)("dev"));
+        this.app.use(body_parser_1.default.json());
     }
     routes() {
         this.app.use(this.apiPaths.users, user_routes_1.default);
@@ -41,4 +43,4 @@ class Server {
     }
 }
 exports.default = Server;
-//# sourceMappingURL=Server.js.map
+//# sourceMappingURL=server.js.map

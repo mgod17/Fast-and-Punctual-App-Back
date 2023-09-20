@@ -7,7 +7,7 @@ export const registerUser = async (req: Request, res: Response) => {
   try {
     const { email, password, role } = req.body;
 
-    if (!email || !password || !role) {
+    if (!email || !password) {
       return res.status(400).json({ error: "All fields are required." });
     }
 
@@ -16,24 +16,19 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "The email already exists" });
     }
 
-    if (!password) {
-      return res.status(400).json({ message: "Password is required" });
-    }
-
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
-
     const user = new UserModel({ email, password, role });
 
     await user.save();
 
-    const token = generateToken(user);
+    const token = generateToken({ userId: user._id, email, role: user.role });
 
-    return res.json({ token });
-  } catch (error) {
+    res.json({ token });
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    if (error.errors && error.errors.password) {
+      return res.status(400).json({ error: error.errors.password.message });
+    }
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -58,6 +53,6 @@ export const loginUser = async (req: Request, res: Response) => {
     res.json({ token });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Error en el servidor" });
   }
 };
