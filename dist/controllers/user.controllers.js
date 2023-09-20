@@ -19,28 +19,24 @@ const userToken_1 = require("../token/userToken");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password, role } = req.body;
-        // if (!email || !password || !role) {
-        //   return res.status(400).json({ error: "All fields are required." });
-        // }
+        if (!email || !password) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
         const existingUser = yield Users_1.default.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "The email already exists" });
         }
-        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-        if (!password) {
-            return res.status(400).json({ message: 'Password is required' });
-        }
-        if (!email) {
-            return res.status(400).json({ message: 'Email is required' });
-        }
-        const user = new Users_1.default({ email, password: hashedPassword, role });
+        const user = new Users_1.default({ email, password, role });
         yield user.save();
-        const token = (0, userToken_1.generateToken)(user);
+        const token = (0, userToken_1.generateToken)({ userId: user._id, email, role: user.role });
         res.json({ token });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        if (error.errors && error.errors.password) {
+            return res.status(400).json({ error: error.errors.password.message });
+        }
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 exports.registerUser = registerUser;
@@ -60,7 +56,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ message: "Error en el servidor" });
     }
 });
 exports.loginUser = loginUser;
