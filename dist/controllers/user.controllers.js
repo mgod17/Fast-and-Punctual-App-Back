@@ -33,7 +33,10 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        if (error.errors && error.errors.password) {
+            return res.status(400).json({ error: error.errors.password.message });
+        }
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 exports.registerUser = registerUser;
