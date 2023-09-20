@@ -12,25 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongodb_1 = require("mongodb");
+const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const url = process.env.DB_URL;
-if (!url) {
+const uri = process.env.DB_URI;
+if (!uri) {
     console.error("DB_URL not defined in .env");
     process.exit(1);
 }
 const db = () => __awaiter(void 0, void 0, void 0, function* () {
-    const client = new mongodb_1.MongoClient(url);
     try {
-        yield client.connect();
-        console.log("Connected successfully to MongoDB Atlas");
+        const db = yield mongoose_1.default.connect(uri);
+        console.log("Connected successfully to MongoDB Atlas", db.connection.db.databaseName);
     }
     catch (error) {
         console.log("Connection to MongoDB Atlas failed", error);
-    }
-    finally {
-        yield client.close();
     }
 });
 exports.default = db;

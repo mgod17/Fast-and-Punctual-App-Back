@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 import morgan from "morgan";
+import bodyParser from 'body-parser';
 
 import userRoutes from "../routes/user.routes";
 import db from "../db/conections";
@@ -35,6 +36,8 @@ class Server {
 
     //MORGAN
     this.app.use(morgan("dev"));
+
+    this.app.use(bodyParser.json())
   }
 
   routes() {
