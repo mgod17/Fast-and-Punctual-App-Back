@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 import morgan from "morgan";
-import bodyParser from 'body-parser';
+import bodyParser from "body-parser";
 
 import userRoutes from "../routes/user.routes";
 import db from "../db/conections";
@@ -29,7 +29,12 @@ class Server {
 
   middlewares() {
     //CORS
-    this.app.use(cors());
+    const corsOptions = {
+      origin: "http://localhost:3000",
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      credentials: true,
+    };
+    this.app.use(cors(corsOptions));
 
     //JSON
     this.app.use(express.json());
@@ -37,7 +42,7 @@ class Server {
     //MORGAN
     this.app.use(morgan("dev"));
 
-    this.app.use(bodyParser.json())
+    this.app.use(bodyParser.json());
   }
 
   routes() {
