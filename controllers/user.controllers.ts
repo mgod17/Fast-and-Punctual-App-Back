@@ -20,9 +20,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     await user.save();
 
-    const token = generateToken({ userId: user._id, email, role: user.role });
-
-    res.json({ token });
+    res.json({ message: "Successful registration" });
   } catch (error: any) {
     console.error(error);
     if (error.errors && error.errors.password) {
