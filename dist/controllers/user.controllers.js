@@ -28,8 +28,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         const user = new Users_1.default({ email, password, role });
         yield user.save();
-        const token = (0, userToken_1.generateToken)({ userId: user._id, email, role: user.role });
-        res.json({ token });
+        res.json({ message: "Successful registration" });
     }
     catch (error) {
         console.error(error);

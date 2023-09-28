@@ -26,7 +26,12 @@ class Server {
     }
     middlewares() {
         //CORS
-        this.app.use((0, cors_1.default)());
+        const corsOptions = {
+            origin: "http://localhost:3000",
+            methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+            credentials: true,
+        };
+        this.app.use((0, cors_1.default)(corsOptions));
         //JSON
         this.app.use(express_1.default.json());
         //MORGAN

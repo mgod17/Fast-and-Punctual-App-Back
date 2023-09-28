@@ -6,16 +6,19 @@ dotenv.config();
 const uri = process.env.DB_URI;
 
 if (!uri) {
-  console.error("DB_URL not defined in .env");
-  process.exit(1);
+  throw new Error("DB_URI is not defined");
 }
 
 const db = async () => {
   try {
-    const db = await mongoose.connect(uri);
-    console.log("Connected successfully to MongoDB Atlas", db.connection.db.databaseName);
+    const { connection } = await mongoose.connect(uri);
+    if (connection.readyState === 1) {
+      console.log("Connected successfully to MongoDB Atlas");
+      return Promise.resolve(true);
+    }
   } catch (error) {
     console.log("Connection to MongoDB Atlas failed", error);
+    return Promise.reject(false);
   }
 };
 

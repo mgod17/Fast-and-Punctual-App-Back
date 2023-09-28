@@ -17,16 +17,19 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const uri = process.env.DB_URI;
 if (!uri) {
-    console.error("DB_URL not defined in .env");
-    process.exit(1);
+    throw new Error("DB_URI is not defined");
 }
 const db = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const db = yield mongoose_1.default.connect(uri);
-        console.log("Connected successfully to MongoDB Atlas", db.connection.db.databaseName);
+        const { connection } = yield mongoose_1.default.connect(uri);
+        if (connection.readyState === 1) {
+            console.log("Connected successfully to MongoDB Atlas");
+            return Promise.resolve(true);
+        }
     }
     catch (error) {
         console.log("Connection to MongoDB Atlas failed", error);
+        return Promise.reject(false);
     }
 });
 exports.default = db;
