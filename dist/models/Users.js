@@ -33,7 +33,15 @@ let User = class User {
     }
 };
 __decorate([
-    (0, typegoose_1.prop)({ required: true, unique: true, trim: true }),
+    (0, typegoose_1.prop)({
+        required: [true, "Email is required"],
+        unique: true,
+        trim: true,
+        validate: {
+            validator: (email) => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email),
+            message: "Invalid email format. Please use a valid email address.",
+        },
+    }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
