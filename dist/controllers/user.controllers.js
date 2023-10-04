@@ -14,41 +14,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.registerUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const Users_1 = __importDefault(require("../models/Users"));
+const Users_1 = require("../models/Users");
 const userToken_1 = require("../token/userToken");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password, role } = req.body;
         if (!email || !password) {
-            return res.status(400).json({ error: "All fields are required." });
+            return res.status(400).json({ error: "Todos los campos son requeridos" });
         }
-        const existingUser = yield Users_1.default.findOne({ email });
+        const existingUser = yield Users_1.UserModel.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ message: "The email already exists" });
+            return res
+                .status(400)
+                .json({ message: "El correo electrónico ya existe" });
         }
-        const user = new Users_1.default({ email, password, role });
+        const user = new Users_1.UserModel({ email, password, role });
         yield user.save();
-        res.json({ message: "Successful registration" });
+        res.json({ message: "Registro exitoso" });
     }
     catch (error) {
         console.error(error);
         if (error.errors && error.errors.password) {
             return res.status(400).json({ error: error.errors.password.message });
         }
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: "Error Interno del Servidor" });
     }
 });
 exports.registerUser = registerUser;
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
-        const user = yield Users_1.default.findOne({ email });
+        const user = yield Users_1.UserModel.findOne({ email });
         if (!user) {
-            return res.status(401).json({ message: "Incorrect credentials" });
+            return res.status(401).json({ message: "Credenciales incorrectas" });
         }
         const passwordMatch = yield bcrypt_1.default.compare(password, user.password);
         if (!passwordMatch) {
-            return res.status(401).json({ message: "Incorrect credentials" });
+            return res.status(401).json({ message: "Credenciales incorrectas" });
         }
         const token = (0, userToken_1.generateToken)({ userId: user._id, email, role: user.role });
         res.json({ token });

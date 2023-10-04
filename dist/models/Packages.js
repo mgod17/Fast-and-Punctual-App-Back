@@ -21,55 +21,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PackageModel = exports.UserModel = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
-const bcrypt_1 = __importDefault(require("bcrypt"));
-let User = class User {
-    hashPassword(password) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const saltRounds = 10;
-            const hashedPassword = yield bcrypt_1.default.hash(password, saltRounds);
-            return hashedPassword;
-        });
-    }
-};
-__decorate([
-    (0, typegoose_1.prop)({
-        required: [true, "Email is required"],
-        unique: true,
-        trim: true,
-        validate: {
-            validator: (email) => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email),
-            message: "Invalid email format. Please use a valid email address.",
-        },
-    }),
-    __metadata("design:type", String)
-], User.prototype, "email", void 0);
-__decorate([
-    (0, typegoose_1.prop)({
-        required: true,
-        validate: {
-            validator: (password) => /^(?=.*[A-Z]).{8,}$/.test(password),
-            message: "Password must be at least 8 characters and contain a capital letter",
-        },
-    }),
-    __metadata("design:type", String)
-], User.prototype, "password", void 0);
-__decorate([
-    (0, typegoose_1.prop)({ required: true, enum: ["admin", "delivery"], default: "delivery" }),
-    __metadata("design:type", String)
-], User.prototype, "role", void 0);
-__decorate([
-    (0, typegoose_1.prop)({ ref: () => Package }),
-    __metadata("design:type", Array)
-], User.prototype, "packages", void 0);
-User = __decorate([
-    (0, typegoose_1.pre)("save", function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.password = yield this.hashPassword(this.password);
-        });
-    })
-], User);
+const Users_1 = __importDefault(require("./Users"));
 var PackageStatus;
 (function (PackageStatus) {
     PackageStatus["PENDING"] = "pendiente";
@@ -107,11 +60,10 @@ __decorate([
     __metadata("design:type", String)
 ], Package.prototype, "status", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ ref: User }),
+    (0, typegoose_1.prop)({ ref: Users_1.default }) // Use direct reference
+    ,
     __metadata("design:type", Object)
 ], Package.prototype, "assignedTo", void 0);
-const UserModel = (0, typegoose_1.getModelForClass)(User);
-exports.UserModel = UserModel;
 const PackageModel = (0, typegoose_1.getModelForClass)(Package);
-exports.PackageModel = PackageModel;
-//# sourceMappingURL=Users.js.map
+exports.default = PackageModel;
+//# sourceMappingURL=Packages.js.map

@@ -1,4 +1,4 @@
-import { prop, getModelForClass, pre } from "@typegoose/typegoose";
+import { prop, getModelForClass, pre, Ref } from "@typegoose/typegoose";
 import bcrypt from "bcrypt";
 
 @pre<User>("save", async function () {
@@ -30,6 +30,9 @@ class User {
   @prop({ required: true, enum: ["admin", "delivery"], default: "delivery" })
   role: string;
 
+  @prop({ ref: () => Package })
+  packages: Ref<Package>[];
+
   async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -37,6 +40,39 @@ class User {
   }
 }
 
-const UserModel = getModelForClass(User);
+enum PackageStatus {
+  PENDING = "pendiente",
+  DELIVERED = "entregado",
+}
 
-export default UserModel;
+class Package {
+  @prop({ required: true })
+  address: string;
+
+  @prop({ required: true })
+  recipientName: string;
+
+  @prop({ required: true })
+  weightKg: number;
+
+  @prop({ required: true })
+  date: Date;
+
+  @prop({ required: true })
+  quantity: number;
+
+  @prop({ enum: PackageStatus, default: PackageStatus.PENDING })
+  status: PackageStatus;
+
+  @prop({ ref: User })
+  assignedTo: Ref<User>;
+
+  static async deletePackage(packageId: string) {
+    return await PackageModel.findByIdAndDelete(packageId);
+  }
+}
+
+const UserModel = getModelForClass(User);
+const PackageModel = getModelForClass(Package);
+
+export { UserModel, PackageModel };

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import UserModel from "../models/Users";
+import { UserModel } from "../models/Users";
 import { generateToken } from "../token/userToken";
 
 export const registerUser = async (req: Request, res: Response) => {
