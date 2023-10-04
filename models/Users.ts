@@ -12,7 +12,7 @@ class User {
     validate: {
       validator: (email: string) =>
         /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email),
-      message: "Invalid email format. Please use a valid email address.",
+      message: "Formato de email inválido. Por favor escribe una dirección válida",
     },
   })
   email: string;
@@ -22,7 +22,7 @@ class User {
     validate: {
       validator: (password: string) => /^(?=.*[A-Z]).{8,}$/.test(password),
       message:
-        "Password must be at least 8 characters and contain a capital letter",
+        "La contraseña debe contener al menos 8 caracteres y un letra mayúscula",
     },
   })
   password: string;
