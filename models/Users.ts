@@ -66,10 +66,6 @@ class Package {
 
   @prop({ ref: User })
   assignedTo: Ref<User>;
-
-  static async deletePackage(packageId: string) {
-    return await PackageModel.findByIdAndDelete(packageId);
-  }
 }
 
 const UserModel = getModelForClass(User);
